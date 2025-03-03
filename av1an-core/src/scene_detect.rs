@@ -38,7 +38,7 @@ pub fn av_scenechange_detect(
 
   let input2 = input.clone();
   let frame_thread = thread::spawn(move || {
-    let frames = input2.frames().unwrap();
+    let frames = input2.frames(None).unwrap();
     if verbosity != Verbosity::Quiet {
       progress_bar::convert_to_progress(0);
       progress_bar::set_len(frames as u64);
@@ -46,6 +46,7 @@ pub fn av_scenechange_detect(
     frames
   });
 
+  let frames = frame_thread.join().unwrap();
   let scenes = scene_detect(
     input,
     encoder,
@@ -64,8 +65,6 @@ pub fn av_scenechange_detect(
     sc_downscale_height,
     zones,
   )?;
-
-  let frames = frame_thread.join().unwrap();
 
   progress_bar::finish_progress_bar();
 
