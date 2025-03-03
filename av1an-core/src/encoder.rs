@@ -761,6 +761,8 @@ impl Encoder {
         "fast",
         "--crf",
         q.to_string(),
+        "--input",
+        "-",
       ],
     }
   }
@@ -798,6 +800,8 @@ impl Encoder {
         "--y4m",
         "--crf",
         q.to_string(),
+        "--input",
+        "-",
       ],
     }
   }
@@ -866,9 +870,10 @@ impl Encoder {
 
     let output: Vec<Cow<str>> = match self {
       Self::svt_av1 => chain!(params, into_array!["-b", probe_path]).collect(),
-      Self::aom | Self::rav1e | Self::vpx | Self::x264 | Self::x265 => {
+      Self::aom | Self::rav1e | Self::vpx | Self::x264 => {
         chain!(params, into_array!["-o", probe_path, "-"]).collect()
       }
+      Self::x265 => chain!(params, into_array!["-o", probe_path]).collect(),
     };
 
     (pipe, output)
